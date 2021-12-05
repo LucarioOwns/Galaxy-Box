@@ -1,3 +1,11 @@
+{% for tag in product.tags%}
+	{% if tag contains 'affiliate' %}
+		{%assign isAffiliateProduct = true %}
+		{%assign affiliateLink = tag | split: '_' | last %}
+	{% endif%}
+{% endfor%}
+
+
 <div class="product-template__container page-width"
   id="ProductSection-{{ section.id }}"
   data-section-id="{{ section.id }}"
@@ -133,11 +141,13 @@
 
     <div class="grid__item {{ product_description_width }}">
       <div class="product-single__meta">
-
+      
         <h1 class="product-single__title">{{ product.title }}</h1>
-        <div>⭐⭐⭐⭐⭐</div>
         <script>window.performance.mark('debut:product:title_visible');</script>
 
+        {%unless isAffiliateProduct %}
+         <div>⭐⭐⭐⭐⭐</div>
+        
           <div class="product__price">
             {% include 'product-price', variant: current_variant, show_vendor: section.settings.show_vendor %}
           </div>
@@ -152,6 +162,7 @@
               {%- endif -%}
             </div>
           {%- endif -%}
+          {% endunless %}
 
           {% capture "form_classes" -%}
             product-form product-form-{{ section.id }}
@@ -163,6 +174,7 @@
             {{ form | payment_terms }}
 
             {% unless product.has_only_default_variant %}
+
               <div class="product-form__controls-group">
                 {% for option in product.options_with_values %}
                   <div class="selector-wrapper js product-form__item">
